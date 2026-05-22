@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kindah's First Run 🎉</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    font-family: Georgia, serif;
+    color: #fff;
+    padding-bottom: 60px;
+  }
+
+  /* Header */
+  .header { text-align: center; padding: 50px 24px 30px; }
+  .eyebrow {
+    font-size: 13px; letter-spacing: 4px; text-transform: uppercase;
+    color: #fddb92; margin-bottom: 12px; font-style: italic;
+  }
+  h1 {
+    font-size: clamp(32px, 8vw, 60px); font-weight: 900; line-height: 1;
+    margin-bottom: 8px;
+    background: linear-gradient(to right, #fddb92, #ff9a9e, #fddb92);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .subtitle { color: #a8b8d8; font-size: 15px; margin-top: 12px; font-style: italic; }
+
+  /* Stats */
+  .stats { display: flex; justify-content: center; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
+  .stat {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px; padding: 14px 22px; min-width: 100px; text-align: center;
+  }
+  .stat-value { font-size: 20px; font-weight: 800; color: #fddb92; }
+  .stat-label { font-size: 11px; color: #7a8aaa; letter-spacing: 1px; margin-top: 2px; text-transform: uppercase; }
+
+  /* Main content */
+  .content { max-width: 480px; margin: 0 auto; padding: 0 20px; }
+  .section-label {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: #7a8aaa; margin-bottom: 20px; text-align: center;
+  }
+
+  /* Warm up card */
+  .warmup-card {
+    background: rgba(255,154,158,0.08); border: 1px solid rgba(255,154,158,0.3);
+    border-radius: 20px; padding: 20px; margin-bottom: 28px;
+  }
+  .warmup-header {
+    display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+  }
+  .warmup-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #ff9a9e; margin-bottom: 6px; }
+  .warmup-title { font-weight: 800; font-size: 18px; }
+  .warmup-sub { font-size: 13px; color: #8899bb; margin-top: 4px; }
+  .chevron {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,154,158,0.2); display: flex; align-items: center;
+    justify-content: center; font-size: 18px; transition: transform 0.3s; flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .warmup-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; display: none; }
+  .warmup-list.open { display: flex; }
+  .warmup-item {
+    background: rgba(255,255,255,0.05); border-radius: 12px;
+    padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;
+  }
+  .warmup-icon { font-size: 22px; flex-shrink: 0; }
+  .warmup-name { font-weight: 700; font-size: 14px; }
+  .warmup-badge {
+    font-size: 11px; background: rgba(255,154,158,0.2); color: #ff9a9e;
+    padding: 2px 8px; border-radius: 20px; margin-left: 6px;
+  }
+  .warmup-desc { font-size: 12px; color: #7a8aaa; margin-top: 3px; line-height: 1.4; }
+  .warmup-note { font-size: 12px; color: #5a7a6a; font-style: italic; text-align: center; margin-top: 4px; }
+
+  /* Timeline */
+  .timeline { position: relative; }
+  .timeline-line {
+    position: absolute; left: 28px; top: 28px; bottom: 28px; width: 2px;
+    background: linear-gradient(to bottom, #fddb92, #ff9a9e, #d4a5f5);
+    opacity: 0.3; border-radius: 2px;
+  }
+  .step {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 14px; cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .step.active { transform: translateX(4px); }
+  .step-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0; transition: box-shadow 0.3s;
+  }
+  .step-body {
+    flex: 1; border-radius: 16px; padding: 14px 18px;
+    transition: all 0.3s; border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.05);
+  }
+  .step.active .step-body { background: rgba(255,255,255,0.09); }
+  .step-row { display: flex; justify-content: space-between; align-items: center; }
+  .step-name { font-weight: 700; font-size: 15px; }
+  .step-dur {
+    font-size: 12px; font-weight: 700; padding: 3px 10px;
+    border-radius: 20px; letter-spacing: 0.5px; white-space: nowrap;
+  }
+  .step-desc { margin-top: 8px; font-size: 13px; color: #a8b8d8; font-style: italic; line-height: 1.5; display: none; }
+  .step.active .step-desc { display: block; }
+
+  .tap-hint { text-align: center; font-size: 12px; color: #5a6a8a; font-style: italic; margin: 4px 0 32px; }
+
+  /* Tips */
+  .tips { display: flex; flex-direction: column; gap: 12px; }
+  .tip {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start;
+  }
+  .tip-emoji { font-size: 24px; flex-shrink: 0; }
+  .tip-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #fddb92; }
+  .tip-body { font-size: 13px; color: #8899bb; line-height: 1.5; }
+
+  /* Footer */
+  .footer {
+    text-align: center; margin-top: 40px; padding: 24px;
+    background: linear-gradient(135deg, rgba(253,219,146,0.1), rgba(212,165,245,0.1));
+    border: 1px solid rgba(253,219,146,0.2); border-radius: 20px;
+  }
+  .footer-icon { font-size: 28px; margin-bottom: 10px; }
+  .footer-title { font-weight: 800; font-size: 18px; color: #fddb92; margin-bottom: 8px; }
+  .footer-text { font-size: 13px; color: #7a8aaa; line-height: 1.6; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">First Run Journey</div>
+  <h1>Kindah's First Run 🎉</h1>
+  <p class="subtitle">Run plan khusus pemula — aman, fun, dan achievable</p>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">~43 mnt</div>
+      <div class="stat-label">Total Waktu</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">24 mnt</div>
+      <div class="stat-label">Total Lari</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Warm Up -->
+  <div class="warmup-card">
+    <div class="warmup-header" onclick="toggleWarmup()">
+      <div>
+        <div class="warmup-eyebrow">Sebelum Mulai</div>
+        <div class="warmup-title">🔥 Dynamic Warm Up</div>
+        <div class="warmup-sub">5–7 menit · 6 gerakan</div>
+      </div>
+      <div class="chevron" id="chevron">▾</div>
+    </div>
+    <div class="warmup-list" id="warmupList">
+      <div class="warmup-item">
+        <span class="warmup-icon">🦶</span>
+        <div>
+          <div><span class="warmup-name">Ankle Circles</span><span class="warmup-badge">10x tiap kaki</span></div>
+          <div class="warmup-desc">Putar pergelangan kaki searah & berlawanan jarum jam</div>
+        </div>
+      </div>
+      <div class="warmup-item">
+        <span class="warmup-icon">🦵</span>
+        <div>
+          <div><span class="warmup-name">Leg Swings</span><span class="warmup-badge">10x tiap kaki</span></div>
+          <div class="warmup-desc">Ayun kaki ke depan-belakang, pegang tembok/tiang buat balance</div>
+        </div>
+      </div>
+      <div class="warmup-item">
+        <span class="warmup-icon">🔄</span>
+        <div>
+          <div><span class="warmup-name">Hip Circles</span><span class="warmup-badge">10x tiap arah</span></div>
+          <div class="warmup-desc">Tangan di pinggang, putar pinggul seperti hula hoop</div>
+        </div>
+      </div>
+      <div class="warmup-item">
+        <span class="warmup-icon">🏃‍♀️</span>
+        <div>
+          <div><span class="warmup-name">High Knees (pelan)</span><span class="warmup-badge">20 detik</span></div>
+          <div class="warmup-desc">Angkat lutut setinggi pinggang, pelan-pelan, jangan lompat</div>
+        </div>
+      </div>
+      <div class="warmup-item">
+        <span class="warmup-icon">💪</span>
+        <div>
+          <div><span class="warmup-name">Arm Swings</span><span class="warmup-badge">10x</span></div>
+          <div class="warmup-desc">Kedua tangan ayun ke depan-belakang berbarengan, buka dada</div>
+        </div>
+      </div>
+      <div class="warmup-item">
+        <span class="warmup-icon">✨</span>
+        <div>
+          <div><span class="warmup-name">Butt Kicks (pelan)</span><span class="warmup-badge">20 detik</span></div>
+          <div class="warmup-desc">Tumit ke arah bokong, jalan di tempat, santai aja</div>
+        </div>
+      </div>
+      <div class="warmup-note">💡 Nggak perlu lompat-lompat — slow & controlled aja</div>
+    </div>
+  </div>
+
+  <!-- Run Schedule -->
+  <div class="section-label">— Run Schedule —</div>
+
+  <div class="timeline">
+    <div class="timeline-line"></div>
+
+    <div class="step" onclick="toggleStep(this)" data-color="#ff9a9e">
+      <div class="step-icon" style="background:rgba(255,154,158,0.22);border:2px solid rgba(255,154,158,0.55)">🔥</div>
+      <div class="step-body" style="--c:#ff9a9e">
+        <div class="step-row">
+          <span class="step-name">Dynamic Warm Up</span>
+          <span class="step-dur" style="background:rgba(255,154,158,0.33);color:#ff9a9e">5–7 min</span>
+        </div>
+        <div class="step-desc">Gerakin sendi dulu sebelum mulai — ini penting banget!</div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)" data-color="#a8e6cf">
+      <div class="step-icon" style="background:rgba(168,230,207,0.22);border:2px solid rgba(168,230,207,0.55)">🚶‍♀️</div>
+      <div class="step-body">
+        <div class="step-row">
+          <span class="step-name">Brisk Walk</span>
+          <span class="step-dur" style="background:rgba(168,230,207,0.33);color:#a8e6cf">5 min</span>
+        </div>
+        <div class="step-desc">Jalan cepat, naikin heart rate pelan-pelan</div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)" data-color="#fddb92">
+      <div class="step-icon" style="background:rgba(253,219,146,0.22);border:2px solid rgba(253,219,146,0.55)">🏃‍♀️</div>
+      <div class="step-body">
+        <div class="step-row">
+          <span class="step-name">Easy Jog</span>
+          <span class="step-dur" style="background:rgba(253,219,146,0.33);color:#fddb92">8 min</span>
+        </div>
+        <div class="step-desc">Lari pelan, bisa ngobrol masih — kalau napas berat, pelanin!</div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)" data-color="#a8e6cf">
+      <div class="step-icon" style="background:rgba(168,230,207,0.22);border:2px solid rgba(168,230,207,0.55)">🚶‍♀️</div>
+      <div class="step-body">
+        <div class="step-row">
+          <span class="step-name">Walk</span>
+          <span class="step-dur" style="background:rgba(168,230,207,0.33);color:#a8e6cf">2 min</span>
+        </div>
+        <div class="step-desc">Napas, jangan berhenti total ya</div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)" data-color="#fddb92">
+      <div class="step-icon" style="background:rgba(253,219,146,0.22);border:2px solid rgba(253,219,146,0.55)">🏃‍♀️</div>
+      <div class="step-body">
+        <div class="step-row">
+          <span class="step-name">Easy Jog</span>
+          <span class="step-dur" style="background:rgba(253,219,146,0.33);color:#fddb92">8 min</span>
+        </div>
+        <div class="step-desc">Lari pelan lagi, pace tetap sama kayak tadi</div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)" data-color="#a8e6cf">
+      <div class="step-icon" style="background:rgba(168,230,207,0.22);border:2px solid rgba(168,230,207,0.55)">🚶‍♀️</div>
+      <div class="step-body">
+        <div class="step-row">
+          <span class="step-name">Walk</span>
+          <span class="step-dur" style="background:rgba(168,230,207,0.33);color:#a8e6cf">2 min</span>
+        </div>
+        <div class="step-desc">Recovery, minum air</div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)" data-color="#fddb92">
+      <div class="step-icon" style="background:rgba(253,219,146,0.22);border:2px solid rgba(253,219,146,0.55)">🏃‍♀️</div>
+      <div class="step-body">
+        <div class="step-row">
+          <span class="step-name">Easy Jog</span>
+          <span class="step-dur" style="background:rgba(253,219,146,0.33);color:#fddb92">8 min</span>
+        </div>
+        <div class="step-desc">Terakhir! Kamu udah hampir selesai 💛</div>
+      </div>
+    </div>
+
+    <div class="step" onclick="toggleStep(this)" data-color="#d4a5f5">
+      <div class="step-icon" style="background:rgba(212,165,245,0.22);border:2px solid rgba(212,165,245,0.55)">🧘‍♀️</div>
+      <div class="step-body">
+        <div class="step-row">
+          <span class="step-name">Cool Down Walk</span>
+          <span class="step-dur" style="background:rgba(212,165,245,0.33);color:#d4a5f5">5 min</span>
+        </div>
+        <div class="step-desc">Jalan pelan + napas dalam, biarin heart rate turun dulu</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="tap-hint">Tap tiap step buat lihat detail 💡</p>
+
+  <!-- Tips -->
+  <div class="section-label">— Tips Buat Besok —</div>
+  <div class="tips">
+    <div class="tip">
+      <span class="tip-emoji">⏱️</span>
+      <div>
+        <div class="tip-title">Main ke waktu, bukan jarak</div>
+        <div class="tip-body">Bukan soal jarak, bukan soal pace. Kalau 43 menit selesai = SUKSES. Jarak mah bonus.</div>
+      </div>
+    </div>
+    <div class="tip">
+      <span class="tip-emoji">👟</span>
+      <div>
+        <div class="tip-title">Pace itu penting</div>
+        <div class="tip-body">Kalau napas udah nggak bisa ngobrol, pelanin. Gak ada yang ngejudge!</div>
+      </div>
+    </div>
+    <div class="tip">
+      <span class="tip-emoji">💧</span>
+      <div>
+        <div class="tip-title">Minum sebelum lari</div>
+        <div class="tip-body">Minum 1-2 gelas air 30 menit sebelum start, bukan pas lagi lari.</div>
+      </div>
+    </div>
+    <div class="tip">
+      <span class="tip-emoji">🎵</span>
+      <div>
+        <div class="tip-title">Playlist hype</div>
+        <div class="tip-body">Pilih lagu BPM 150-160 buat lari, bikin mood auto naik.</div>
+      </div>
+    </div>
+    <div class="tip">
+      <span class="tip-emoji">🌤️</span>
+      <div>
+        <div class="tip-title">Waktu terbaik</div>
+        <div class="tip-body">Pagi sebelum jam 8 atau sore setelah jam 5. Hindari terik matahari.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-icon">💪✨</div>
+    <div class="footer-title">You've got this!</div>
+    <div class="footer-text">
+      Kalau selesai, berarti berhasil — apapun jaraknya.<br>
+      Selamat lari besok, Kindah! 🏃‍♀️🎀
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleWarmup() {
+    const list = document.getElementById('warmupList');
+    const chevron = document.getElementById('chevron');
+    list.classList.toggle('open');
+    chevron.classList.toggle('open');
+  }
+
+  function toggleStep(el) {
+    const wasActive = el.classList.contains('active');
+    document.querySelectorAll('.step').forEach(s => {
+      s.classList.remove('active');
+      const icon = s.querySelector('.step-icon');
+      icon.style.boxShadow = 'none';
+      s.querySelector('.step-body').style.borderColor = 'rgba(255,255,255,0.08)';
+    });
+    if (!wasActive) {
+      el.classList.add('active');
+      const color = el.dataset.color;
+      el.querySelector('.step-icon').style.boxShadow = `0 0 20px ${color}66`;
+      el.querySelector('.step-body').style.borderColor = color + '55';
+    }
+  }
+</script>
+</body>
+</html>
